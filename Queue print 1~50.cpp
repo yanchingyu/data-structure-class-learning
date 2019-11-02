@@ -26,12 +26,10 @@ Queue<T>::Queue(int cap)
 template<class T>
 void Queue<T>::Add(T x)
 {
-	int tmp = rear + 1;		
-	tmp %= capacity;
-	if (tmp == front)
+	if ( ++rear % capacity == front)
 		cout << "Queue is full";
 	else
-		array[rear = tmp] = x;
+		array[rear] = x;
 }
 
 template<class T>
