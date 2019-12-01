@@ -26,7 +26,7 @@ Queue<T>::Queue(int cap)
 template<class T>
 void Queue<T>::Add(T x)
 {
-	if ( ++rear % capacity == front)
+	if (++rear % capacity == front)
 		cout << "Queue is full";
 	else
 		array[rear] = x;
@@ -50,7 +50,7 @@ bool Queue<T>::isEmpty()
 	if (front == rear)
 		return true;
 	else
- 		return false;
+		return false;
 }
 
 #define size 51
@@ -58,11 +58,10 @@ int main()
 {
 	Queue<int> num(size);
 
-	for (int i = 1; i <= size; i++)
+	for (int i = 1; i < size; i++)
 	{
 		num.Add(i);
 	}
-	cout << endl;
 	for (int i = 0; i < size; i++)
 	{
 		if (num.isEmpty())
