@@ -45,6 +45,7 @@ T Queue<T>::Del()
 	}
 }
 
+
 template<class T>
 bool Queue<T>::isEmpty()
 {
@@ -65,6 +66,7 @@ public:
 	TreeNode(T d, TreeNode<T> *l, TreeNode<T> *r);
 private:
 	T data;
+	int value;
 	TreeNode<T> *leftChild, *rightChild;
 };
 
@@ -72,6 +74,7 @@ template<class T>
 TreeNode<T>::TreeNode(T e)
 {
 	data = e;
+	value = e - '0';
 	leftChild = rightChild = 0;
 }
 
@@ -90,16 +93,22 @@ public:
 	Tree() { root = 0; }
 	Tree(Tree<T> &p);
 
-	TreeNode<T> *Copy(TreeNode<T> *originNode);
+	TreeNode<T> * Copy(TreeNode<T> *originNode);
 	void Insert(T e);
 	void Plot();
+
 	void PreOrder();
 	void PreOrder(TreeNode<T> *p);
 	void InOrder();
 	void InOrder(TreeNode<T> *p);
 	void PostOrder();
 	void PostOrder(TreeNode<T> *p);
+	void PostOrderEval();
+	void PostOrderEval(TreeNode<T> *p);
 	void LevelOrder();
+
+	void SwapTree();
+	TreeNode<T> * SwapTree(TreeNode<T> *p);
 
 	void Height();			//用PreOrder方式
 	int Height(TreeNode<T> *pt);		
@@ -108,6 +117,7 @@ public:
 
 	void construct_a();
 	void construct_b();
+	void construct_c();
 private:
 	TreeNode<T> *root;
 };
@@ -173,7 +183,7 @@ struct tmpT
 #define RESOLUTION 2
 #define LEFT_MARGINE 1
 template<class T>
-void Tree<T>::Plot()
+void Tree<T>::Plot()			//輸出樹狀圖
 {
 	TreeNode<T> *pt;
 	Queue<tmpT> q(100);
@@ -223,6 +233,7 @@ void Tree<T>::Plot()
 	}
 	cout << endl;
 }
+
 
 template<class T>
 void Tree<T>::PreOrder()
@@ -276,6 +287,32 @@ void Tree<T>::PostOrder(TreeNode<T>* p)
 }
 
 template<class T>
+void Tree<T>::PostOrderEval()
+{
+	PostOrderEval(root);
+	cout << root->value << endl;
+}
+
+template<class T>
+void Tree<T>::PostOrderEval(TreeNode<T>* p)
+{
+	if (p)
+	{
+		PostOrderEval(p->leftChild);
+		PostOrderEval(p->rightChild);
+		switch (p->data)
+		{
+		case '+': p->value = p->leftChild->value + p->rightChild->value; break;
+		case '-': p->value = p->leftChild->value - p->rightChild->value; break;
+		case '*': p->value = p->leftChild->value * p->rightChild->value; break;
+		case '/': p->value = p->leftChild->value / p->rightChild->value; break;
+		case '%': p->value = p->leftChild->value % p->rightChild->value; break;
+		default: break;
+		}
+	}
+}
+
+template<class T>
 void Tree<T>::LevelOrder()
 {
 	Queue<TreeNode<T>*> queue(20);
@@ -296,6 +333,22 @@ void Tree<T>::LevelOrder()
 	}
 	cout << endl;
 }
+
+
+template<class T>
+void Tree<T>::SwapTree()
+{
+	root = SwapTree(root);
+}
+
+template<class T>
+TreeNode<T> * Tree<T>::SwapTree(TreeNode<T>* p)
+{
+	if (!p) 
+		return 0;
+	return new TreeNode<T>(p->data, SwapTree(p->rightChild), SwapTree(p->leftChild));
+}
+
 
 template<class T>
 void Tree<T>::Height()
@@ -338,6 +391,7 @@ int Tree<T>::Sum(TreeNode<T>* pt)
 	return total;
 }
 
+
 template<class T>
 void Tree<T>::construct_a()
 {
@@ -361,6 +415,20 @@ void Tree<T>::construct_b()
 	root->leftChild->rightChild->rightChild = new TreeNode<T>('o');
 	root->rightChild->leftChild->leftChild = new TreeNode<T>('p');
 	root->rightChild->leftChild->rightChild = new TreeNode<T>('q');
+}
+
+template<class T>
+void Tree<T>::construct_c()
+{
+	root = new TreeNode<T>('+');
+	root->leftChild = new TreeNode<T>('*');
+	root->rightChild = new TreeNode<T>('/');
+	root->leftChild->leftChild = new TreeNode<T>('1');
+	root->leftChild->rightChild = new TreeNode<T>('2');
+	root->rightChild->leftChild = new TreeNode<T>('3');
+	root->rightChild->rightChild = new TreeNode<T>('-');
+	root->rightChild->rightChild->leftChild = new TreeNode<T>('5');
+	root->rightChild->rightChild->rightChild = new TreeNode<T>('6');
 }
 
 int main()
@@ -406,6 +474,19 @@ int main()
 
 	cout << "\nPlot the treeC: \n";
 	treeC.Plot();
+
+	/*........treeC's leftChild & rightChild change...........*/
+	cout << "\nPlot the treeC's SwapTree: \n";
+	treeC.SwapTree();
+	treeC.Plot();
+
+	/*........treeD's number PostOrderEval............*/
+	Tree<char> treeD;
+	treeD.construct_c();
+	cout << "\nPlot the treeD: \n";
+	treeD.Plot();
+	cout << "\ntreeD's PostOrderEval: ";
+	treeD.PostOrderEval();
 
 	system("pause");
 }
